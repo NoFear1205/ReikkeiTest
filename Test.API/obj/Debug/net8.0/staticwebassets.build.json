@@ -1,0 +1,19 @@
+{
+  "Version": 1,
+  "Hash": "ex7PlWnKDWYLdxv1f0k0GeI4/ZAq9NPaJvzgwlZqVCg=",
+  "Source": "Test.API",
+  "BasePath": "_content/Test.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "Test.API\\wwwroot",
+      "Source": "Test.API",
+      "ContentRoot": "C:\\Test\\Test.API\\wwwroot\\",
+      "BasePath": "_content/Test.API",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": []
+}
