@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.OpenApi.Models;
 using System.Globalization;
+using System.Reflection;
 using Test.API;
 using Test.Application;
 using Test.Infrastructure;
@@ -32,6 +34,45 @@ builder.Services.AddCors(opt => opt.AddPolicy("webApi", c =>
     c.AllowAnyMethod();
     c.AllowAnyHeader();
 }));
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "PIM API",
+        Description = "An ASP.NET Core Web API",
+    });
+
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter into field the word 'Bearer' following by space and JWT",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement() {
+        {
+            new OpenApiSecurityScheme
+            {
+            Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+
+            },
+            new List<string>()
+            }
+        });
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
+});
 
 var app = builder.Build();
 
@@ -44,11 +85,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseStaticFiles();
 app.UseOpenApi();
-app.UseSwaggerUi(settings =>
+app.UseSwaggerUI(c =>
 {
-    settings.Path = "/api";
-    settings.DocumentPath = "/api/specification.json";
+    c.EnableDeepLinking();
 });
+app.UseStaticFiles();
 
 app.UseCors("webApi");
 
